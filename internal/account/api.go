@@ -46,6 +46,8 @@ type errorResponse struct {
 	Error string `json:"error"`
 }
 
+// Withdraw Проверяет в запросе поле "amount" и вносит на счёт сумму `amount`,
+// при успехе отдаёт новый баланс "balance"
 func (c controller) AddFunds(ctx *fiber.Ctx) error {
 	var req amountRequest
 	err := ctx.BodyParser(&req)
@@ -61,6 +63,8 @@ func (c controller) AddFunds(ctx *fiber.Ctx) error {
 	return ctx.JSON(balanceResponse{toJSNumber(balance, 2)})
 }
 
+// Withdraw Проверяет в запросе поле "amount" и пытается списать средства со счёта,
+// при успехе отдаёт новый баланс "balance"
 func (c controller) Withdraw(ctx *fiber.Ctx) error {
 	var req amountRequest
 	err := ctx.BodyParser(&req)
@@ -84,6 +88,7 @@ func (c controller) Withdraw(ctx *fiber.Ctx) error {
 	return ctx.JSON(balanceResponse{toJSNumber(balance, 2)})
 }
 
+// GetCurrency Возвращает валюту "currency" в котором открыт счёт
 func (c controller) GetCurrency(ctx *fiber.Ctx) error {
 	currency := c.service.GetCurrency()
 
@@ -96,6 +101,7 @@ func (c controller) GetCurrency(ctx *fiber.Ctx) error {
 	})
 }
 
+// GetAccountCurrencyRate Проверяет в запросе поле "currency" на валидность и отдаёт соот. курс "currencyRate" из валюты счёта
 func (c controller) GetAccountCurrencyRate(ctx *fiber.Ctx) error {
 	var req currencyRequest
 	err := ctx.BodyParser(&req)
@@ -119,6 +125,7 @@ func (c controller) GetAccountCurrencyRate(ctx *fiber.Ctx) error {
 	})
 }
 
+// GetBalance Проверяет в запросе поле "currency" на валидность и отдаёт баланс "balance" в соот. валюте
 func (c controller) GetBalance(ctx *fiber.Ctx) error {
 	var req currencyRequest
 	err := ctx.BodyParser(&req)
