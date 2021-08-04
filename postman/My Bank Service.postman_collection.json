@@ -9,14 +9,14 @@
 			"name": "Test",
 			"item": [
 				{
-					"name": "Add 94.3396",
+					"name": "Add 72.00",
 					"event": [
 						{
 							"listen": "prerequest",
 							"script": {
 								"exec": [
 									"pm.globals.set('payload', JSON.stringify({\r",
-									"    amount: 94.3396,\r",
+									"    amount: 72.00,\r",
 									"}));"
 								],
 								"type": "text/javascript"
@@ -26,9 +26,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Add 94.3396 to funds\", function () {\r",
+									"pm.test(\"Balance is 76.32\", function () {\r",
 									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData.balance).to.eql(100);\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(jsonData.balance).to.eql(76.32);\r",
 									"})"
 								],
 								"type": "text/javascript"
@@ -60,20 +61,164 @@
 					"response": []
 				},
 				{
-					"name": "Check balance",
+					"name": "Add 37.50",
 					"event": [
 						{
-							"listen": "test",
+							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.test(\"Balance is 100\", function () {\r",
-									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData.balance).to.eql(100);\r",
-									"});"
+									"pm.globals.set('payload', JSON.stringify({\r",
+									"    amount: 37.50,\r",
+									"}));"
 								],
 								"type": "text/javascript"
 							}
 						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Balance is 120.65\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(jsonData.balance).to.eql(120.65);\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{payload}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/add",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add 10.20",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set('payload', JSON.stringify({\r",
+									"    amount: 10.20,\r",
+									"}));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Balance is 138.71\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(jsonData.balance).to.eql(138.71);\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{payload}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/add",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Try withdraw 127.60",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set('payload', JSON.stringify({\r",
+									"    amount: 127.60,\r",
+									"}));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Withdraw with amount bigger than 30% produces error\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(jsonData.error).to.eql(\"the amount of withdrawal exceeds the allowable 30.00% amount\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{payload}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/withdraw",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"withdraw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Balance is 138.71",
+					"event": [
 						{
 							"listen": "prerequest",
 							"script": {
@@ -81,6 +226,19 @@
 									"pm.globals.set('payload', JSON.stringify({\r",
 									"    currency: \"SBP\",\r",
 									"}));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Balance is 138.71\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(jsonData.balance).to.eql(138.71);\r",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -114,14 +272,14 @@
 					"response": []
 				},
 				{
-					"name": "Withdraw 20",
+					"name": "Try withdraw 30.00",
 					"event": [
 						{
 							"listen": "prerequest",
 							"script": {
 								"exec": [
 									"pm.globals.set('payload', JSON.stringify({\r",
-									"    amount: 20,\r",
+									"    amount: 30.00,\r",
 									"}));"
 								],
 								"type": "text/javascript"
@@ -131,9 +289,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Withdraw 20\", function () {\r",
+									"pm.test(\"Balance should be 108.71\", function () {\r",
 									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData.balance).to.eql(80);\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(jsonData.balance).to.eql(108.71);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -165,7 +324,7 @@
 					"response": []
 				},
 				{
-					"name": "Check in rubles",
+					"name": "Balance in rubles is 81.78",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -182,9 +341,9 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Balance is 100\", function () {\r",
+									"pm.test(\"Balance in rubles is 81.78\", function () {\r",
 									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData.balance).to.eql(60.18);\r",
+									"    pm.expect(jsonData.balance).to.eql(81.78);\r",
 									"});"
 								],
 								"type": "text/javascript"
