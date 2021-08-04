@@ -1,6 +1,9 @@
 package account
 
-import "math"
+import (
+	"errors"
+	"math"
+)
 
 type Currency string
 
@@ -24,18 +27,18 @@ func (acc Account) Currency() Currency {
 }
 
 // Returns balance of account in `currency`
-func (acc Account) Amount(currency Currency) float64 {
+func (acc Account) Amount(currency Currency) (float64, error) {
 	switch currency {
 	case CurrencySBP, CurrencyRUB:
 		break
 	default:
-		panic("not valid currency")
+		return 0, errors.New("not valid currency")
 	}
 
 	if acc.currency == currency {
-		return float64(acc.balance) / math.Pow10(fixedFraction)
+		return float64(acc.balance) / math.Pow10(fixedFraction), nil
 	} else if acc.currency != CurrencyRUB {
-		return float64(acc.balance) * exchangeRateSBP2RUB / math.Pow10(fixedFraction)
+		return float64(acc.balance) * exchangeRateSBP2RUB / math.Pow10(fixedFraction), nil
 	}
 
 	panic("unreachable")
@@ -43,15 +46,10 @@ func (acc Account) Amount(currency Currency) float64 {
 
 // Add to account balance `amount` SBP
 func (acc Account) Add(amount float64) Account {
-	return Account{acc.balance + int64(amount*math.Pow10(fixedFraction)), acc.currency}
+	return Account{acc.balance + int64(math.Ceil(amount*math.Pow10(fixedFraction))), acc.currency}
 }
 
 // Subtract account balance `amount` SBP
 func (acc Account) Sub(amount float64) Account {
-	return Account{acc.balance - int64(amount*math.Pow10(fixedFraction)), acc.currency}
-}
-
-// Multiply account balance by `m`
-func (acc Account) Mul(m float64) Account {
-	return Account{acc.balance - int64(m*math.Pow10(fixedFraction)), acc.currency}
+	return acc.Add(-amount)
 }

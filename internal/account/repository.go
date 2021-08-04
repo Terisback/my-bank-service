@@ -19,9 +19,9 @@ const (
 // We will pretend that errors do not exist
 type Repository interface {
 	// Gets account of the only loyal depositor of our bank
-	GetAccount() Account
+	GetAccount() (Account, error)
 	// Updates account of the only loyal depositor of our bank
-	UpdateAccount(account Account)
+	UpdateAccount(account Account) error
 }
 
 type repo struct {
@@ -34,32 +34,34 @@ func NewRepository(db *sql.DB) Repository {
 }
 
 // Gets balance of the only loyal depositor of our bank
-func (r repo) GetAccount() Account {
+func (r repo) GetAccount() (Account, error) {
 	var balance int64
 	var currency Currency
 	err := r.db.QueryRow("SELECT balance, currency FROM accounts WHERE id = ?", theOnlyLoyalDepositorID).Scan(&balance, &currency)
 	if err != nil {
-		panic("the only depositor is... not there")
+		return Account{}, fmt.Errorf("the only depositor is... not there")
 	}
 
-	return Account{balance, currency}
+	return Account{balance, currency}, nil
 }
 
 // Updates account of the only loyal depositor of our bank
-func (r repo) UpdateAccount(account Account) {
+func (r repo) UpdateAccount(account Account) error {
 	result, err := r.db.Exec("UPDATE accounts SET balance = ?, currency = ? WHERE id = ?", account.balance, account.currency, theOnlyLoyalDepositorID)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	rows, err := result.RowsAffected()
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	if rows != 1 {
-		panic(fmt.Sprintf("expected to affect 1 row, affected %d", rows))
+		return fmt.Errorf("expected to affect 1 row, affected %d", rows)
 	}
+
+	return nil
 }
 
 //go:embed migrations
