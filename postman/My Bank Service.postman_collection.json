@@ -130,10 +130,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Balance is 138.71\", function () {\r",
+									"pm.test(\"Balance is 138.70\", function () {\r",
 									"    var jsonData = pm.response.json();\r",
 									"    pm.response.to.have.status(200);\r",
-									"    pm.expect(jsonData.balance).to.eql(138.71);\r",
+									"    pm.expect(jsonData.balance).to.eql(138.70);\r",
 									"})"
 								],
 								"type": "text/javascript"
@@ -217,7 +217,7 @@
 					"response": []
 				},
 				{
-					"name": "Balance is 138.71",
+					"name": "Balance is 138.70",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -234,10 +234,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Balance is 138.71\", function () {\r",
+									"pm.test(\"Balance is 138.70\", function () {\r",
 									"    var jsonData = pm.response.json();\r",
 									"    pm.response.to.have.status(200);\r",
-									"    pm.expect(jsonData.balance).to.eql(138.71);\r",
+									"    pm.expect(jsonData.balance).to.eql(138.70);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -289,10 +289,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Balance should be 108.71\", function () {\r",
+									"pm.test(\"Balance should be 108.70\", function () {\r",
 									"    var jsonData = pm.response.json();\r",
 									"    pm.response.to.have.status(200);\r",
-									"    pm.expect(jsonData.balance).to.eql(108.71);\r",
+									"    pm.expect(jsonData.balance).to.eql(108.70);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -394,7 +394,30 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "Account Currency",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/currency",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"currency"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"currency\": \"SBP\"\n}"
+				}
+			]
 		},
 		{
 			"name": "Account Currency Rate",
@@ -423,7 +446,39 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "Account Currency Rate",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currency\": \"RUB\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/currency_rate",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"currency_rate"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"currencyRate\": 0.7523\n}"
+				}
+			]
 		},
 		{
 			"name": "Balance",
@@ -452,7 +507,37 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "Balance",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currency\": \"SBP\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/balance",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"balance"
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"balance\": 81.78\n}"
+				}
+			]
 		},
 		{
 			"name": "Add Funds",
@@ -478,7 +563,37 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "Add Funds",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"amount\": 10.20\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/add",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"add"
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"balance\": 10.81\n}"
+				}
+			]
 		},
 		{
 			"name": "Withdraw",
@@ -504,7 +619,37 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "Withdraw",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"amount\": 30\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/withdraw",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"withdraw"
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\r\n    \"balance\": 108.70\r\n}"
+				}
+			]
 		}
 	],
 	"event": [
