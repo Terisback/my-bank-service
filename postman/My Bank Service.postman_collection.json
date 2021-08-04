@@ -130,10 +130,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Balance is 138.70\", function () {\r",
+									"pm.test(\"Balance is 138.71\", function () {\r",
 									"    var jsonData = pm.response.json();\r",
 									"    pm.response.to.have.status(200);\r",
-									"    pm.expect(jsonData.balance).to.eql(138.70);\r",
+									"    pm.expect(jsonData.balance).to.eql(138.71);\r",
 									"})"
 								],
 								"type": "text/javascript"
@@ -185,7 +185,7 @@
 									"pm.test(\"Withdraw with amount bigger than 30% produces error\", function () {\r",
 									"    var jsonData = pm.response.json();\r",
 									"    pm.response.to.have.status(200);\r",
-									"    pm.expect(jsonData.error).to.eql(\"the amount of withdrawal exceeds the allowable 30.00% amount\");\r",
+									"    pm.expect(jsonData.error).to.eql(\"the amount of withdrawal exceeds the allowable 30.00% of balance\");\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -234,10 +234,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Balance is 138.70\", function () {\r",
+									"pm.test(\"Balance is 138.71\", function () {\r",
 									"    var jsonData = pm.response.json();\r",
 									"    pm.response.to.have.status(200);\r",
-									"    pm.expect(jsonData.balance).to.eql(138.70);\r",
+									"    pm.expect(jsonData.balance).to.eql(138.71);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -289,10 +289,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Balance should be 108.70\", function () {\r",
+									"pm.test(\"Balance should be 108.71\", function () {\r",
 									"    var jsonData = pm.response.json();\r",
 									"    pm.response.to.have.status(200);\r",
-									"    pm.expect(jsonData.balance).to.eql(108.70);\r",
+									"    pm.expect(jsonData.balance).to.eql(108.71);\r",
 									"});"
 								],
 								"type": "text/javascript"
