@@ -145,7 +145,7 @@ func (c controller) GetBalance(ctx *fiber.Ctx) error {
 	return ctx.JSON(balanceResponse{toJSNumber(balance, 2)})
 }
 
-// Casts text into Currency and if it doesn't match with "enum" values returns error
+// Casts text into Currency and if it doesn't match with "enum" values of Currency returns error
 func req2Currency(text string) (Currency, error) {
 	currency := Currency(text)
 	switch currency {
@@ -156,12 +156,12 @@ func req2Currency(text string) (Currency, error) {
 	}
 }
 
-// Adds "requied field " before `field`
+// Adds "required field " before `field`
 func requiredField(field string) string {
 	return fmt.Sprintf(`required field "%s"`, field)
 }
 
-// Formatting float with `preficion` and wraps it into `json.Number`
+// Formatting float with `precision` and wraps it into `json.Number`
 func toJSNumber(f float64, precision uint) json.Number {
 	return json.Number(fmt.Sprintf("%.*f", precision, f))
 }
