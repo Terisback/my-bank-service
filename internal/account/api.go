@@ -62,7 +62,11 @@ func (c controller) Withdraw(ctx *fiber.Ctx) error {
 
 	err = c.service.Withdraw(req.Amount)
 	if err != nil {
-		return ctx.JSON(struct {
+		if err == ErrWithdrawCondition {
+			log.Printf("Tried to withdraw %.2f, but condition is false", req.Amount)
+		}
+
+		return ctx.Status(200).JSON(struct {
 			Error string `json:"error"`
 		}{
 			Error: err.Error(),
