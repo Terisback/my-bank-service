@@ -12,9 +12,11 @@ import (
 type controller struct {
 	service Service
 }
+
 func RegisterHandlers(api fiber.Router, service Service) {
 	c := controller{service}
 
+	// Assign handlers to endpoints
 	api.Get("/currency", c.GetCurrency)
 	api.Get("/currency_rate", c.GetAccountCurrencyRate)
 	api.Get("/balance", c.GetBalance)
@@ -22,19 +24,24 @@ func RegisterHandlers(api fiber.Router, service Service) {
 	api.Post("/withdraw", c.Withdraw)
 }
 
-
+// Represents right request json body for `add` and `withdraw`,
+// otherwise client will get 400 code and `errorResponse`
 type amountRequest struct {
 	Amount float64 `json:"amount"`
 }
 
+// Represents right request json body for `balance` and `currency_rate`,
+// otherwise client will get 400 code and `errorResponse`
 type currencyRequest struct {
 	Currency string `json:"currency"`
 }
 
+// Represents response of `balance`, `add` and `withdraw` endpoints when everything is successful
 type balanceResponse struct {
 	Balance json.Number `json:"balance"`
 }
 
+// If any error occurs in endpoint, this struct will be returned to client
 type errorResponse struct {
 	Error string `json:"error"`
 }
@@ -66,12 +73,14 @@ func (c controller) Withdraw(ctx *fiber.Ctx) error {
 		if err == ErrWithdrawCondition {
 			log.Printf("Tried to withdraw %.2f, but condition is false", req.Amount)
 		}
-
+		// If it's a real error from SQL, it likely to report there
 		return ctx.Status(200).JSON(errorResponse{err.Error()})
 	}
 
 	balance := c.service.GetBalance(CurrencySBP)
+
 	log.Printf("Withdrawed %.2f, Balance is %.2f\n", req.Amount, balance)
+
 	return ctx.JSON(balanceResponse{toJSNumber(balance, 2)})
 }
 
@@ -129,6 +138,7 @@ func (c controller) GetBalance(ctx *fiber.Ctx) error {
 	return ctx.JSON(balanceResponse{toJSNumber(balance, 2)})
 }
 
+// Casts text into Currency and if it doesn't match with "enum" values returns error
 func req2Currency(text string) (Currency, error) {
 	currency := Currency(text)
 	switch currency {
@@ -139,10 +149,12 @@ func req2Currency(text string) (Currency, error) {
 	}
 }
 
+// Adds "requied field " before `field`
 func requiredField(field string) string {
 	return fmt.Sprintf(`required field "%s"`, field)
 }
 
+// Formatting float with `preficion` and wraps it into `json.Number`
 func toJSNumber(f float64, precision uint) json.Number {
 	return json.Number(fmt.Sprintf("%.*f", precision, f))
 }

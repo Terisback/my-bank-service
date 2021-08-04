@@ -59,7 +59,8 @@ func NewService(db *sql.DB) Service {
 	return service{db}
 }
 
-func (s service) AddFunds(sum float64) {
+// AddFunds Позволяет внести на счёт сумму `amount`
+func (s service) AddFunds(amount float64) {
 	balance, err := s.getBalance()
 	if err != nil {
 		log.Println(err)
@@ -67,7 +68,7 @@ func (s service) AddFunds(sum float64) {
 	}
 
 	// I know that we can add sum with sql, it's just the right way, imo, to have business logic on service side
-	balance += sum
+	balance += amount
 
 	err = s.setBalance(balance)
 	if err != nil {
@@ -76,6 +77,7 @@ func (s service) AddFunds(sum float64) {
 	}
 }
 
+// SumProfit Рассчитывает процент по вкладу и полученные деньги вносит на счёт
 func (s service) SumProfit() {
 	balance, err := s.getBalance()
 	if err != nil {
@@ -92,6 +94,7 @@ func (s service) SumProfit() {
 	}
 }
 
+// Withdraw Производит списание со счёта по указанным правилам. Если списание выходит за рамки правил, выдаёт ошибку
 func (s service) Withdraw(amount float64) error {
 	balance, err := s.getBalance()
 	if err != nil {
@@ -111,6 +114,7 @@ func (s service) Withdraw(amount float64) error {
 	return nil
 }
 
+// GetCurrency Выдаёт валюту счёта
 func (s service) GetCurrency() Currency {
 	var currency string
 	err := s.db.QueryRow("SELECT currency FROM accounts WHERE id = ?", theOnlyLoyalDepositorID).Scan(&currency)
@@ -121,10 +125,12 @@ func (s service) GetCurrency() Currency {
 	return Currency(currency)
 }
 
+// GetAccountCurrencyRate Выдаёт курс валюты счёта к передаваемой валюте
 func (s service) GetAccountCurrencyRate(cur Currency) float64 {
 	return exchangeRate(CurrencySBP, cur)
 }
 
+// GetBalance Выдаёт баланс счёта в указанной валюте
 func (s service) GetBalance(cur Currency) float64 {
 	balance, err := s.getBalance()
 	if err != nil {
@@ -134,7 +140,7 @@ func (s service) GetBalance(cur Currency) float64 {
 	return balance * exchangeRate(CurrencySBP, cur)
 }
 
-// Internal method for getting balance
+// Gets balance of the only loyal depositor of our bank
 func (s service) getBalance() (float64, error) {
 	var balance float64
 	err := s.db.QueryRow("SELECT balance FROM accounts WHERE id = ?", theOnlyLoyalDepositorID).Scan(&balance)
@@ -145,7 +151,7 @@ func (s service) getBalance() (float64, error) {
 	return balance, nil
 }
 
-// Internal method for setting balance
+// Sets balance if the only loyal depositor of our bank to `balance`
 func (s service) setBalance(balance float64) error {
 	result, err := s.db.Exec("UPDATE accounts SET balance = ? WHERE id = ?", balance, theOnlyLoyalDepositorID)
 	if err != nil {
@@ -164,6 +170,7 @@ func (s service) setBalance(balance float64) error {
 	return nil
 }
 
+// Gets exchange rate for specific `from` and `to` combination
 func exchangeRate(from Currency, to Currency) float64 {
 	if from == to {
 		return 1
@@ -172,10 +179,13 @@ func exchangeRate(from Currency, to Currency) float64 {
 }
 
 const (
+	// Very cool magic const that makes world happier
 	exchangeRateKeyDelimiter = "->"
 )
 
-// Util function for getting exchange rates map key
+// Combines in `from` and `to` in unique way
+//
+// "Unique way": SBP->RUB
 func exchangeRateKey(from Currency, to Currency) string {
 	return string(from) + exchangeRateKeyDelimiter + string(to)
 }
@@ -186,11 +196,13 @@ var ErrWithdrawCondition error = fmt.Errorf("the amount of withdrawal exceeds th
 var migrations embed.FS
 
 func LoadMigrations(db *sql.DB) error {
+	// Мне так понравилось как всё легко сложилось с миграциями в sqlite
 	src, err := httpfs.New(http.FS(migrations), "migrations")
 	if err != nil {
 		return err
 	}
 
+	// Вот бы везде так было
 	driver, err := sqlite3.WithInstance(db, &sqlite3.Config{})
 	if err != nil {
 		return err
