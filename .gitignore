@@ -1,0 +1,7 @@
+*.db
+*.exe
+*.dll
+*.o
+
+# Sqlite Database file
+/bank.db
