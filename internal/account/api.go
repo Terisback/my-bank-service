@@ -9,6 +9,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+type controller struct {
+	service Service
+}
 func RegisterHandlers(api fiber.Router, service Service) {
 	c := controller{service}
 
@@ -19,9 +22,6 @@ func RegisterHandlers(api fiber.Router, service Service) {
 	api.Post("/withdraw", c.Withdraw)
 }
 
-type controller struct {
-	service Service
-}
 
 type amountRequest struct {
 	Amount float64 `json:"amount"`
@@ -76,12 +76,14 @@ func (c controller) Withdraw(ctx *fiber.Ctx) error {
 }
 
 func (c controller) GetCurrency(ctx *fiber.Ctx) error {
-	currrency := c.service.GetCurrency()
-	log.Printf("Account currency is %s\n", currrency)
+	currency := c.service.GetCurrency()
+
+	log.Printf("Account currency is %s\n", currency)
+
 	return ctx.JSON(struct {
 		Currency string `json:"currency"`
 	}{
-		Currency: string(currrency),
+		Currency: string(currency),
 	})
 }
 
@@ -94,11 +96,13 @@ func (c controller) GetAccountCurrencyRate(ctx *fiber.Ctx) error {
 
 	currency, err := req2Currency(req.Currency)
 	if err != nil {
-		return ctx.Status(200).JSON(errorResponse{requiredField("currency")})
+		return ctx.Status(200).JSON(errorResponse{err.Error()})
 	}
 
 	cr := c.service.GetAccountCurrencyRate(currency)
+
 	log.Printf("Currency rate is %.4f\n", cr)
+
 	return ctx.JSON(struct {
 		CurrencyRate json.Number `json:"currencyRate"`
 	}{
@@ -113,8 +117,15 @@ func (c controller) GetBalance(ctx *fiber.Ctx) error {
 		return ctx.Status(400).JSON(errorResponse{requiredField("currency")})
 	}
 
-	balance := c.service.GetBalance(Currency(req.Currency))
+	currency, err := req2Currency(req.Currency)
+	if err != nil {
+		return ctx.Status(200).JSON(errorResponse{err.Error()})
+	}
+
+	balance := c.service.GetBalance(currency)
+
 	log.Printf("Balance is %.2f\n", balance)
+
 	return ctx.JSON(balanceResponse{toJSNumber(balance, 2)})
 }
 
