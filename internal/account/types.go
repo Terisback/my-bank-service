@@ -37,7 +37,7 @@ func (acc Account) Amount(currency Currency) (float64, error) {
 
 	if acc.currency == currency {
 		return float64(acc.balance) / math.Pow10(fixedFraction), nil
-	} else if acc.currency != CurrencyRUB {
+	} else if currency == CurrencyRUB {
 		return float64(acc.balance) * exchangeRateSBP2RUB / math.Pow10(fixedFraction), nil
 	}
 
